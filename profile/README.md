@@ -14,6 +14,8 @@
 
 Parameterised, production-oriented Terraform modules for Azure (`azurerm` 4.x, Terraform ≥ 1.5). Every module passes `terraform fmt` and `validate` in CI; Trivy and Checkov results are published in each repository's Security tab.
 
+**[Browse the module catalog →](https://aircloud-pl.github.io/)** (filterable, with a pinned usage snippet for every module; source: [AIRCLOUD-PL.github.io](https://github.com/AIRCLOUD-PL/AIRCLOUD-PL.github.io))
+
 | Area | Modules |
 |---|---|
 | Foundation | [resource-group](https://github.com/AIRCLOUD-PL/azure-resource-group-module) · [rbac-management](https://github.com/AIRCLOUD-PL/azure-rbac-management) · [multi-tenant-config](https://github.com/AIRCLOUD-PL/azure-multi-tenant-config) · [key-vault](https://github.com/AIRCLOUD-PL/azure-key-vault-module) |
@@ -23,11 +25,11 @@ Parameterised, production-oriented Terraform modules for Azure (`azurerm` 4.x, T
 | Integration | [api-management](https://github.com/AIRCLOUD-PL/azure-api-management-module) · [service-bus](https://github.com/AIRCLOUD-PL/azure-service-bus-module) · [event-hubs](https://github.com/AIRCLOUD-PL/azure-event-hubs-module) |
 | Examples | [infrastructure-examples](https://github.com/AIRCLOUD-PL/azure-infrastructure-examples) — multi-environment configurations built from the modules |
 
-Use a module straight from GitHub:
+Use a module straight from GitHub, pinned to a release tag:
 
 ```hcl
 module "key_vault" {
-  source = "git::https://github.com/AIRCLOUD-PL/azure-key-vault-module.git?ref=main"
+  source = "git::https://github.com/AIRCLOUD-PL/azure-key-vault-module.git?ref=v1.0.0"
   # ...
 }
 ```
