@@ -1,0 +1,73 @@
+# Wspólny pipeline dla modułów Terraform w AIRCLOUD-PL (reusable workflow).
+# Moduł wywołuje go z .github/workflows/ci.yml:
+#   jobs:
+#     module:
+#       uses: AIRCLOUD-PL/.github/.github/workflows/terraform-module.yml@main
+#
+# Bramki blokujące: terraform fmt, init (bez backendu), validate na dwóch wersjach Terraform.
+# Skany bezpieczeństwa (Trivy config, Checkov) raportują do zakładki Security (SARIF),
+# ale nie blokują — wyniki przegląda człowiek (Maker-Checker).
+name: Terraform module
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate (Terraform ${{ matrix.terraform }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        terraform: ["1.5.7", "1.9.8"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ matrix.terraform }}
+          terraform_wrapper: false
+      - name: terraform fmt
+        run: terraform fmt -check -recursive
+      - name: terraform init
+        run: terraform init -backend=false -input=false
+      - name: terraform validate
+        run: terraform validate
+
+  security:
+    name: Security scan (report only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trivy (misconfiguration)
+        run: |
+          docker run --rm -v "$PWD:/src" -w /src aquasec/trivy:0.58.1 \
+            config --exit-code 0 --format sarif --output /src/trivy.sarif .
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          framework: terraform
+          quiet: true
+          soft_fail: true
+          output_format: sarif
+          output_file_path: checkov-out
+      - name: Upload Trivy results
+        if: always() && hashFiles('trivy.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy.sarif
+          category: trivy
+      - name: Upload Checkov results
+        if: always() && hashFiles('checkov-out/results_sarif.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: checkov-out/results_sarif.sarif
+          category: checkov
