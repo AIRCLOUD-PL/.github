@@ -8,7 +8,7 @@
 
 > Most AI projects stop at the demo. We build the infrastructure and the engineering process that take them to production.
 
-[aircloud.com.pl](https://aircloud.com.pl) · [About](https://aircloud.com.pl/en/about) · [Insights](https://aircloud.com.pl/en/knowledge) · [LinkedIn](https://www.linkedin.com/in/lukasz-kolodziej/) · B2B, 100% remote
+[aircloud.com.pl](https://aircloud.com.pl) · [About](https://aircloud.com.pl/en/about) · [Insights](https://aircloud.com.pl/en/knowledge) · [LinkedIn](https://www.linkedin.com/in/lukasz-kolodziej/) · [GitHub](https://github.com/lkolo-prez) · B2B, remote across Poland and the EU or on-site in selected cities
 
 ## Azure Terraform modules
 
